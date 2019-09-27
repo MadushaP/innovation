@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
+import './style.css';
 
 const getColor = (props) => {
   if (props.isDragAccept) {
@@ -37,38 +38,6 @@ const Container = styled.div`
 `;
 
 
-const thumbsContainer = {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  marginTop: 16
-};
-
-const thumb = {
-  display: 'inline-flex',
-  borderRadius: 2,
-  border: '1px solid #eaeaea',
-  margin: '0 auto',
-  width: 500,
-  height: 300,
-  boxSizing: 'border-box',
-  position: 'absolute',
-  left: '38%',
-  top: '20%'
-};
-
-const thumbInner = {
-  display: 'flex',
-  minWidth: 0,
-  overflow: 'hidden'
-};
-
-const img = {
-  display: 'block',
-  width: '100%',
-  height: '100%'
-};
-
-
 export default function StyledDropzone(props) {
   const [files, setFiles] = useState([]);
   const {
@@ -88,11 +57,11 @@ export default function StyledDropzone(props) {
 
     
   const thumbs = files.map(file => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
+    <div className="thumb" key={file.name}>
+      <div className="thumbInner">
         <img
           src={file.preview}
-          style={img}
+          className="img"
         />
       </div>
     </div>
@@ -105,7 +74,7 @@ export default function StyledDropzone(props) {
         <p>Drag 'n' drop some files here, or click to select files</p>
       </Container>
 
-      <aside style={thumbsContainer}>
+      <aside className="thumbsContainer">
         {thumbs}
       </aside>
     </div>
