@@ -3,6 +3,12 @@ import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 import './style.css';
 
+const Clarifai = require('clarifai');
+
+const app = new Clarifai.App({
+  apiKey: 'fd998d19d60949d4b49a4e4e9391591e'
+});
+
 const getColor = (props) => {
   if (props.isDragAccept) {
     return '#00e676';
@@ -38,6 +44,25 @@ const Container = styled.div`
 `;
 
 
+function predict(blob) {
+  console.log(blob);
+  var reader = new FileReader();
+  reader.readAsDataURL(blob); 
+  reader.onloadend = function() {
+      var base64data = reader.result.toString().split(',')[1];           
+
+      app.models.predict(Clarifai.GENERAL_MODEL, {base64: base64data }).then(
+        function(response) {
+          console.log(response.outputs[0].data.concepts)
+        },
+        function(err) {
+          console.log(err)
+        }
+      );
+  }
+}
+
+
 export default function StyledDropzone(props) {
   const [files, setFiles] = useState([]);
   const {
@@ -52,10 +77,10 @@ export default function StyledDropzone(props) {
       setFiles(acceptedFiles.map(file => Object.assign(file, {
         preview: URL.createObjectURL(file)
       })));
+      predict(acceptedFiles[0])
     }
   });
 
-    
   const thumbs = files.map(file => (
     <div className="thumb" key={file.name}>
       <div className="thumbInner">
