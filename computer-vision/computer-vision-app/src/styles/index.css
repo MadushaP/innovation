@@ -20,7 +20,7 @@ code {
 
 .thumb {
   display: inline-flex;
-  border: '1px solid #eaeaea';
+  border: "1px solid #eaeaea";
   margin: 0 auto;
   width: 500px;
   height: 300px;
@@ -48,8 +48,12 @@ code {
   height: 100px;
   padding: 20px;
   position: absolute;
-  top: 75%;
-  left: 35%;
+  top: 60%;
+  left: 30%;
   margin: -70px 0 0 -170px;
+  font-size: x-large;
 }
 
+.dropText {
+  margin-top: 15px;
+}
