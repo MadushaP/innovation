@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 import './style.css';
@@ -43,28 +43,9 @@ const Container = styled.div`
   top: 10%;
 `;
 
-
-function predict(blob) {
-  console.log(blob);
-  var reader = new FileReader();
-  reader.readAsDataURL(blob); 
-  reader.onloadend = function() {
-      var base64data = reader.result.toString().split(',')[1];           
-
-      app.models.predict(Clarifai.GENERAL_MODEL, {base64: base64data }).then(
-        function(response) {
-          console.log(response.outputs[0].data.concepts)
-        },
-        function(err) {
-          console.log(err)
-        }
-      );
-  }
-}
-
-
 export default function StyledDropzone(props) {
   const [files, setFiles] = useState([]);
+  const [predictResults, setPredictResults] = useState([]);
   const {
     getRootProps,
     getInputProps,
@@ -77,7 +58,23 @@ export default function StyledDropzone(props) {
       setFiles(acceptedFiles.map(file => Object.assign(file, {
         preview: URL.createObjectURL(file)
       })));
-      predict(acceptedFiles[0])
+
+      var reader = new FileReader();
+      reader.readAsDataURL(acceptedFiles[0]);
+      reader.onloadend = function () {
+        var base64data = reader.result.toString().split(',')[1];
+
+        app.models.predict(Clarifai.GENERAL_MODEL, { base64: base64data }).then(
+          function (response) {
+            console.log(response.outputs[0].data.concepts);
+            setPredictResults(response.outputs[0].data.concepts);
+
+          },
+          function (err) {
+            console.log(err)
+          }
+        );
+      }
     }
   });
 
@@ -92,16 +89,28 @@ export default function StyledDropzone(props) {
     </div>
   ));
 
+  const result = predictResults.map(result => (
+    <td key={result.id}>{result.name}</td>
+  ));
+
   return (
     <div className="container">
       <Container {...getRootProps({ isDragActive, isDragAccept, isDragReject })}>
         <input {...getInputProps()} />
         <p>Drag 'n' drop some files here, or click to select files</p>
       </Container>
-
       <aside className="thumbsContainer">
         {thumbs}
       </aside>
+      <div className="labels">
+        <table>
+          <tbody>
+            <tr >
+              {result}
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
